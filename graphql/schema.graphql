@@ -11,6 +11,8 @@ type Query {
     category(id: ID @eq): Category @find
     questions: [Question!]! @paginate(defaultCount: 10)
     question(id: ID @eq): Question @find
+    personValues: [PersonValue!]! @paginate(defaultCount: 10)
+    personValue(id: ID @eq): PersonValue @find
 }
 
 type User {
@@ -33,4 +35,11 @@ type Question {
     id: ID!
     title: String!
     category: Category! @belongsTo
+}
+
+type PersonValue {
+    id: ID!
+    title: String!
+    created_at: DateTime!
+    updated_at: DateTime!
 }
