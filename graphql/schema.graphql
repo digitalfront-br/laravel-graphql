@@ -12,6 +12,7 @@ type Query {
 type User {
     id: ID!
     name: String!
+    phone: String!
     email: String!
     created_at: DateTime!
     updated_at: DateTime!
