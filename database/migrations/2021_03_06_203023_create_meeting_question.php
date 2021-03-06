@@ -17,7 +17,6 @@ class CreateMeetingQuestion extends Migration
             $table->id();
             $table->bigInteger('meeting_id');
             $table->bigInteger('question_id');
-            $table->timestamps();
         });
     }
 
