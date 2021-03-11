@@ -4,7 +4,8 @@ scalar Date @scalar(class: "Nuwave\\Lighthouse\\Schema\\Types\\Scalars\\Date")
 "A datetime string with format `Y-m-d H:i:s`, e.g. `2018-05-23 13:43:32`."
 scalar DateTime @scalar(class: "Nuwave\\Lighthouse\\Schema\\Types\\Scalars\\DateTime")
 
-type Query {
+type Query @guard(with: ["sanctum", "api"]) {
+    me: User @field(resolver: "UserQuery@me")
     users: [User!]! @paginate(defaultCount: 10)
     user(id: ID @eq): User @find
     categories: [Category!]! @paginate(defaultCount: 10)
@@ -15,10 +16,16 @@ type Query {
     personValue(id: ID @eq): PersonValue @find
 }
 
+type Mutation {
+  login(email: String!, password: String!): String! @field(resolver: "AuthMutator@login")
+#   logout: User @guard
+}
+
 type User {
     id: ID!
     name: String!
     phone: String!
+    apiToken: String!
     email: String!
     created_at: DateTime!
     updated_at: DateTime!
@@ -27,6 +34,7 @@ type User {
 type Category {
     id: ID!
     title: String!
+    image: String!
     description: String!
     questions: [Question!] @hasMany
 }

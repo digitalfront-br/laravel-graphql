@@ -37,6 +37,9 @@ class UserFactory extends Factory
                 'password' => Hash::make('password'),
                 'remember_token' => Str::random(10),
             ]);
+            // $u =  User::find($user);
+            // $u->token = $u->createToken('user-token')->plainTextToken;
+            // $u->update();
         }
         return [];
     }
