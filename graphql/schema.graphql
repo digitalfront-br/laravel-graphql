@@ -2,7 +2,23 @@
 scalar Date @scalar(class: "Nuwave\\Lighthouse\\Schema\\Types\\Scalars\\Date")
 
 "A datetime string with format `Y-m-d H:i:s`, e.g. `2018-05-23 13:43:32`."
-scalar DateTime @scalar(class: "Nuwave\\Lighthouse\\Schema\\Types\\Scalars\\DateTime")
+scalar DateTime
+    @scalar(class: "Nuwave\\Lighthouse\\Schema\\Types\\Scalars\\DateTime")
+
+type Mutation {
+    createUser(input: CreateUserInput! @spread): User @create
+    updateUser(id: ID!, input: UpdateUserInput! @spread): User @update
+    deleteUser(id: ID!): User @delete
+    createCategory(input: CreateCategoryInput! @spread): Category @create
+    updateCategory(id: ID!, input: UpdateCategoryInput! @spread): Category
+        @update
+    deleteCategory(id: ID!): Category @delete
+    createQuestion(input: CreateQuestionInput! @spread): Question @create
+    updateQuestion(id: ID!, input: UpdateQuestionInput! @spread): Question
+        @update
+    deleteQuestion(id: ID!): Question @delete
+    createMeeting(input: CreateMeetingInput! @spread): Meeting @create
+}
 
 type Query @guard(with: ["sanctum", "api"]) {
     me: User @field(resolver: "UserQuery@me")
@@ -14,6 +30,8 @@ type Query @guard(with: ["sanctum", "api"]) {
     question(id: ID @eq): Question @find
     personValues: [PersonValue!]! @paginate(defaultCount: 10)
     personValue(id: ID @eq): PersonValue @find
+    meetings: [Meeting!]! @paginate(defaultCount: 10)
+    meeting(id: ID @eq): Meeting @find
 }
 
 type Mutation {
@@ -27,6 +45,7 @@ type User {
     phone: String!
     apiToken: String!
     email: String!
+    meetings: [Meeting!]! @hasMany
     created_at: DateTime!
     updated_at: DateTime!
 }
@@ -42,6 +61,7 @@ type Category {
 type Question {
     id: ID!
     title: String!
+    meeting: Meeting! @belongsToMany
     category: Category! @belongsTo
 }
 
@@ -50,4 +70,52 @@ type PersonValue {
     title: String!
     created_at: DateTime!
     updated_at: DateTime!
+}
+
+type Meeting {
+    id: ID!
+    title: String!
+    user: User! @belongsTo
+    questions: [Question!]! @belongsToMany
+    created_at: DateTime!
+    updated_at: DateTime!
+}
+
+input CreateUserInput {
+    name: String!
+    phone: String!
+    email: String!
+    password: String! @hash
+}
+
+input CreateCategoryInput {
+    title: String!
+    description: String
+}
+
+input CreateQuestionInput {
+    title: String!
+    category_id: ID!
+}
+
+input CreateMeetingInput {
+    title: String!
+    user_id: ID!
+}
+
+input UpdateUserInput {
+    name: String
+    phone: String
+    email: String
+    password: String @hash
+}
+
+input UpdateCategoryInput {
+    title: String
+    description: String
+}
+
+input UpdateQuestionInput {
+    title: String
+    category_id: ID
 }
