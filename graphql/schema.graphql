@@ -6,17 +6,18 @@ scalar DateTime
     @scalar(class: "Nuwave\\Lighthouse\\Schema\\Types\\Scalars\\DateTime")
 
 type Mutation {
-    createUser(input: CreateUserInput! @spread): User @create
-    updateUser(id: ID!, input: UpdateUserInput! @spread): User @update
-    deleteUser(id: ID!): User @delete
-    createCategory(input: CreateCategoryInput! @spread): Category @create
-    updateCategory(id: ID!, input: UpdateCategoryInput! @spread): Category
-        @update
-    deleteCategory(id: ID!): Category @delete
-    createQuestion(input: CreateQuestionInput! @spread): Question @create
-    updateQuestion(id: ID!, input: UpdateQuestionInput! @spread): Question
-        @update
-    deleteQuestion(id: ID!): Question @delete
+    login(input: LoginUserInput! @spread): String! @field(resolver: "AuthMutator@login")
+    # createUser(input: CreateUserInput! @spread): User @create
+    # updateUser(id: ID!, input: UpdateUserInput! @spread): User @update
+    # deleteUser(id: ID!): User @delete
+    # createCategory(input: CreateCategoryInput! @spread): Category @create
+    # updateCategory(id: ID!, input: UpdateCategoryInput! @spread): Category
+    #     @update
+    # deleteCategory(id: ID!): Category @delete
+    # createQuestion(input: CreateQuestionInput! @spread): Question @create
+    # updateQuestion(id: ID!, input: UpdateQuestionInput! @spread): Question
+    #     @update
+    # deleteQuestion(id: ID!): Question @delete
     createMeeting(input: CreateMeetingInput! @spread): Meeting @create
 }
 
@@ -34,10 +35,6 @@ type Query @guard(with: ["sanctum", "api"]) {
     meeting(id: ID @eq): Meeting @find
 }
 
-type Mutation {
-  login(email: String!, password: String!): String! @field(resolver: "AuthMutator@login")
-#   logout: User @guard
-}
 
 type User {
     id: ID!
@@ -79,6 +76,11 @@ type Meeting {
     questions: [Question!]! @belongsToMany
     created_at: DateTime!
     updated_at: DateTime!
+}
+
+input LoginUserInput {
+    email: String!
+    password: String!
 }
 
 input CreateUserInput {

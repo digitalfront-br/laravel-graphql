@@ -18,6 +18,7 @@ class DatabaseSeeder extends Seeder
             PersonValueSeeder::class,
             CategorySeeder::class,
             QuestionSeeder::class,
+            MovieBookSeeder::class,
             MeetingSeeder::class
         ]);
     }
