@@ -11,6 +11,7 @@ class MovieBook extends Model
     protected $fillable = [
         'title',
         'type',
+        'image',
         'description'
     ];
 }

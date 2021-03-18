@@ -38,6 +38,10 @@ class AuthController extends Controller
                 return response()->json(['password' => ['Senha incorreta']], 400);
             }
         }
+        if($user->api_token == null) {
+            $user->api_token = $user->createToken('user-token')->plainTextToken;
+            $user->update();
+        }
         return response()->json($user, 200);
     }
 
@@ -77,10 +81,8 @@ class AuthController extends Controller
             ])->id;
 
             $u =  User::find($user);
-            $u->token = $u->createToken('user-token')->plainTextToken;
+            $u->api_token = $u->createToken('user-token')->plainTextToken;
             $u->update();
-
-            dd($u);
 
             return response()->json($user, 201);
         }

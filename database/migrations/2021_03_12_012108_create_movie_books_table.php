@@ -18,6 +18,7 @@ class CreateMovieBooksTable extends Migration
             $table->string('title');
             $table->text('description');
             $table->unsignedBigInteger('type');
+            $table->text('image')->nullable();
             $table->timestamps();
         });
     }

@@ -17,6 +17,7 @@ class MovieBooksImport implements ToModel,  WithHeadingRow
         return new MovieBook([
             'title' => $row['title'],
             'type' => $row['type'],
+            'image' => ('https://ui-avatars.com/api/?name=' . str_replace(' ', '+', $row['title']).'&size=100&color=7F9CF5&background=DBF4FF'),
             'description' => $row['description']
         ]);
     }

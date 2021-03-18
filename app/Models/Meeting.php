@@ -11,6 +11,7 @@ class Meeting extends Model
 
     protected $fillable = [
         'title',
+        'image',
         'user_id'
     ];
 

@@ -19,7 +19,7 @@ class DatabaseSeeder extends Seeder
             CategorySeeder::class,
             QuestionSeeder::class,
             MovieBookSeeder::class,
-            MeetingSeeder::class
+            // MeetingSeeder::class
         ]);
     }
 }
