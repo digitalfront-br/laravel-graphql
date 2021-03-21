@@ -2,9 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Mail\ConfirmUserMail;
 use App\Models\User;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\{Auth, Hash, Validator};
+use Illuminate\Support\Facades\{Auth, Hash, Mail, Password, Validator};
 
 class AuthController extends Controller
 {
@@ -38,11 +39,20 @@ class AuthController extends Controller
                 return response()->json(['password' => ['Senha incorreta']], 400);
             }
         }
-        if($user->api_token == null) {
-            $user->api_token = $user->createToken('user-token')->plainTextToken;
-            $user->update();
+        if ($user->email_verified_at === null) {
+            return response()->json(['status' => ['você precisa confirmar seu email']], 400);
+        } else {
+            if ($user->api_token == null) {
+                $user->api_token = $user->createToken('user-token')->plainTextToken;
+                $user->update();
+            }
         }
         return response()->json($user, 200);
+    }
+
+    public function confirmMail()
+    {
+        return redirect()->route('goToApp');
     }
 
     public function createAccount(Request $request)
@@ -71,28 +81,38 @@ class AuthController extends Controller
 
         if ($findUser) {
             return response()->json(['email' => ['Email já esta cadastrado']], 400);
-        } else {
-            $user = User::create([
-                'name' => $request->name,
-                'email' => $request->email,
-                'phone' => $request->phone,
-                'password' => Hash::make($request->password),
-                'roles' => 0
-            ])->id;
-
-            $u =  User::find($user);
-            $u->api_token = $u->createToken('user-token')->plainTextToken;
-            $u->update();
-
-            return response()->json($user, 201);
         }
+        $user = User::create([
+            'name' => $request->name,
+            'email' => $request->email,
+            'phone' => $request->phone,
+            'status' => 0,
+            'password' => Hash::make($request->password),
+            'roles' => 0
+        ]);
+        Mail::send(new ConfirmUserMail($user));
+        return response()->json($user, 201);
     }
 
     public function forgotPassword(Request $request)
     {
+        $validate = Validator::make($request->all(), [
+            'email' => 'required|email'
+        ], [
+            'email.required' => 'O email é obrigatório',
+            'email.email'   => 'O email precisa ser válido',
+        ]);
+
+        if ($validate->fails()) {
+            return response()->json($validate->errors(), 400);
+        }
+
         $setUser = User::where('email', $request->email)->first();
-        if($setUser) {
-            return response()->json(['email' => 'Email Cadastrado'], 200);
+        if ($setUser) {
+            Password::sendResetLink(
+                $request->only('email')
+            );
+            return response()->json(['email' => 'link enviado para o email'], 200);
         } else {
             return response()->json(['email' => 'Email não cadastrado'], 400);
         }

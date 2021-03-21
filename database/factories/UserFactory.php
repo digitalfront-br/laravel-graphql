@@ -2,9 +2,11 @@
 
 namespace Database\Factories;
 
+use App\Mail\ConfirmUserMail;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Str;
 
 class UserFactory extends Factory
@@ -29,14 +31,16 @@ class UserFactory extends Factory
             ['phone' => '31998420055', 'name' => 'José Ricardo', 'email' => 'jrer@uol.com.br']
         );
         foreach ($users as $user) {
-            User::create([
+            $user = User::create([
                 'name' => $user['name'],
                 'email' => $user['email'],
                 'phone' => $user['phone'],
-                'email_verified_at' => now(),
+                'roles' => 1,
                 'password' => Hash::make('password'),
                 'remember_token' => Str::random(10),
             ]);
+
+            Mail::send(new ConfirmUserMail($user));
             // $u =  User::find($user);
             // $u->token = $u->createToken('user-token')->plainTextToken;
             // $u->update();
