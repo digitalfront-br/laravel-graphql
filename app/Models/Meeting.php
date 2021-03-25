@@ -20,6 +20,11 @@ class Meeting extends Model
         return $this->belongsToMany(Question::class);
     }
 
+    public function movieBooks()
+    {
+        return $this->belongsToMany(MovieBook::class);
+    }
+
     public function user()
     {
         return $this->belongsTo(User::class);

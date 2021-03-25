@@ -11,7 +11,7 @@ Route::group(['prefix' => 'auth'], function () {
     Route::post('forgot-password', [AuthController::class, 'forgotPassword']);
 });
 
-Route::middleware('auth:sanctum')->post('meetings', [MeetingController::class, 'createMeeting']);
+Route::middleware('auth:sanctum')->post('createmeeting', [MeetingController::class, 'createMeeting']);
 
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();

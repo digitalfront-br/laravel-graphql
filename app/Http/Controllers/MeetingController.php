@@ -11,17 +11,17 @@ class MeetingController extends Controller
     public function createMeeting(Request $request)
     {
         $user = auth()->user();
-        $user->meetings;
 
-        $meeting = new Meeting();
-        $meeting->title = $request->title;
-        $meeting->user_id = $user->id;
-        $meeting->save();
+        $meeting = Meeting::create([
+            'title' => $request->title,
+            'user_id' => $user->id
+        ])->id;
 
         foreach ($request->questions as $q) {
-            DB::table('meeting_question')->insert(["question_id" => $q, "meeting_id" => $meeting->id]);
+            DB::table('meeting_question')
+                ->insert(["question_id" => $q, "meeting_id" => $meeting]);
         }
-        return response()->json($user, 200);
+        return response()->json('criado', 201);
     }
     /**
      * Display a listing of the resource.
